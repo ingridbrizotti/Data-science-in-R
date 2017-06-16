@@ -11,6 +11,5 @@ Spatial data
 Time series and financial data
 Connect to MySQL and to read SAS or SPSS data
 
-STATISTICAL DISTRIBUTIONS 
-Example: normal (gaussian), poisson, binomial, t, F, Q-square, gamma, geometric, exponential, weibull, beta, multinomial, log-normal and logistic
+STATISTICAL DISTRIBUTIONS: normal (gaussian), poisson, binomial, t, F, Q-square, gamma, geometric, exponential, weibull, beta, multinomial, log-normal and logistic
 

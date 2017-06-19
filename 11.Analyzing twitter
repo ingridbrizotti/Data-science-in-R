@@ -1,0 +1,96 @@
+
+# reference: https://sites.google.com/site/miningtwitter/questions/user-tweets 
+# reference: https://sites.google.com/site/miningtwitter/questions/user-tweets/contain-hashtags
+
+# load packages
+library(dplyr)
+library(ggplot2)
+library(stringr)
+
+getwd()
+setwd('C:/Users/s6141181/Documents/Sentimental Analysis')
+tweets<-read.csv('sesamestreet.csv', stringsAsFactors=FALSE)
+tweets <- as.data.frame(tweets)
+
+gluten <- tweets %>%
+  group_by(character) %>%
+  summarise(total=length(text), 
+            hashtags=sum(str_count(text,"#(\\d|\\w)+")),
+            mentions=sum(str_count(text,"@(\\d|\\w)+")),
+            urls=sum(str_count(text,"^(([^:]+)://)?([^:/]+)(:([0-9]+))?(/.*)")))
+
+
+# Plots 
+ggplot(data=gluten)+aes(x=reorder(character,-total),y=total)+geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ylab("Tweets")+xlab("Character")+ggtitle("Characters Ranked by Total Tweets")
+
+ggplot(data=gluten)+aes(x=reorder(character,-hashtags),y=hashtags)+geom_bar(stat="identity")  +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ylab("Tweets")+xlab("Character")+ggtitle("Characters Ranked by Total Hash Tags")
+
+ggplot(data=gluten)+aes(x=reorder(character,-mentions),y=mentions)+geom_bar(stat="identity")  +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ylab("Tweets")+xlab("Character")+ggtitle("Characters Ranked by Total Mentions")
+
+ggplot(data=gluten)+aes(x=reorder(character,-urls),y=urls)+geom_bar(stat="identity")  +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ylab("Tweets")+xlab("Character")+ggtitle("Characters Ranked by Total URLs ")
+
+##############################################################################################################
+# load packages
+library(XML)
+library(tm)
+library(ggplot2)
+library(wordcloud)
+library(stringr)
+
+# split words
+words_list = strsplit(tweets$text, " ")
+
+# words per tweet
+words_per_tweet = sapply(words_list, length)
+# barplot
+barplot(table(words_per_tweet), border=NA,
+        main="Distribution of words per tweet", cex.main=1)
+
+# how many unique words per tweet
+uniq_words_per_tweet = sapply(words_list, function(x) length(unique(x)))
+# barplot
+barplot(table(uniq_words_per_tweet), border=NA,
+        main="Distribution of unique words per tweet", cex.main=1)
+
+# how many hashtags per tweet
+hash_per_tweet = sapply(words_list, function(x) length(grep("#", x)))
+table(hash_per_tweet)
+prop.table(table(hash_per_tweet))
+
+# how many @mentions per tweet
+ats_per_tweet = sapply(words_list, function(x) length(grep("@", x)))
+table(ats_per_tweet)
+prop.table(table(ats_per_tweet))
+
+# most frequent words
+mfw = sort(table(unlist(words_list)), decreasing=TRUE)
+
+# top-20 most frequent
+top20 = head(mfw, 20)
+
+# barplot
+barplot(top20, border=NA, las=2, main="Top 20 most frequent terms", cex.main=1)
+
+
+# get the hashtags
+epa_hashtags = str_extract_all(tweets$text, "#\\w+")
+
+# put tags in vector
+epa_hashtags = unlist(epa_hashtags)
+
+
+# calculate hashtag frequencies
+epa_tags_freq = table(epa_hashtags)
+
+
+
+
+
